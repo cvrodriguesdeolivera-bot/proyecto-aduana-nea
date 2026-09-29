@@ -1,0 +1,1058 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comercio Exterior y Regímenes Aduaneros del NEA (2021-2026)</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        customBlue: {
+                            50: '#f0f7ff',
+                            100: '#e0effe',
+                            600: '#0284c7',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                            950: '#082f49',
+                        },
+                        customYerba: {
+                            50: '#f2fbf4',
+                            100: '#e1f7e5',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                        },
+                        customGold: {
+                            400: '#fbbf24',
+                            500: '#f59e0b',
+                            600: '#d97706',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        .dark .glass-nav {
+            background: rgba(15, 23, 42, 0.85);
+        }
+        .timeline-line::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 20px;
+            width: 4px;
+            background: #cbd5e1;
+        }
+        .dark .timeline-line::before {
+            background: #334155;
+        }
+        @media (min-width: 768px) {
+            .timeline-line::before {
+                left: 50%;
+                transform: translateX(-50%);
+            }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-900 dark:text-slate-100 transition-colors duration-300">
+
+    <!-- HEADER / NAVIGATION -->
+    <header class="fixed top-0 left-0 right-0 z-50 glass-nav border-b border-slate-200 dark:border-slate-800 transition-colors duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center space-x-3">
+                    <div class="p-2 bg-customBlue-900 text-white rounded-lg shadow-md">
+                        <i class="fa-solid me-1 fa-ship text-lg"></i>
+                    </div>
+                    <div>
+                        <span class="text-lg font-bold tracking-tight text-customBlue-950 dark:text-white">NEA Trade & Customs Analytics</span>
+                        <span class="hidden sm:inline-block text-xs bg-customBlue-100 text-customBlue-800 font-semibold ml-2 px-2.5 py-0.5 rounded-full dark:bg-customBlue-900 dark:text-customBlue-100">2021 - 2026</span>
+                    </div>
+                </div>
+                
+                <nav class="hidden lg:flex space-x-6 text-sm font-medium">
+                    <a href="#resumen" class="hover:text-customBlue-600 dark:hover:text-customBlue-400 transition-colors">Resumen Ejec.</a>
+                    <a href="#estadisticas" class="hover:text-customBlue-600 dark:hover:text-customBlue-400 transition-colors">Estadísticas FOB</a>
+                    <a href="#corredores" class="hover:text-customBlue-600 dark:hover:text-customBlue-400 transition-colors">Corredores y Destinos</a>
+                    <a href="#normativa" class="hover:text-customBlue-600 dark:hover:text-customBlue-400 transition-colors">Marco Normativo</a>
+                    <a href="#simulador" class="hover:text-customBlue-600 dark:hover:text-customBlue-400 transition-colors">Simulador Draw-Back</a>
+                    <a href="#riesgos" class="hover:text-customBlue-600 dark:hover:text-customBlue-400 transition-colors">Matriz de Riesgo</a>
+                </nav>
+
+                <div class="flex items-center space-x-3">
+                    <!-- Dark Mode Toggle Button -->
+                    <button id="themeToggle" class="p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors" aria-label="Cambiar tema">
+                        <i id="themeToggleDarkIcon" class="hidden fa-solid fa-moon text-lg"></i>
+                        <i id="themeToggleLightIcon" class="hidden fa-solid fa-sun text-lg text-amber-400"></i>
+                    </button>
+
+                    <!-- Mobile menu button -->
+                    <button id="mobileMenuBtn" class="lg:hidden p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg">
+                        <i class="fa-solid fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Dropdown -->
+        <div id="mobileMenu" class="hidden lg:hidden border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 pt-2 pb-4 space-y-2 text-sm font-medium">
+            <a href="#resumen" class="block py-2 hover:text-customBlue-600">Resumen Ejecutivo</a>
+            <a href="#estadisticas" class="block py-2 hover:text-customBlue-600">Estadísticas FOB</a>
+            <a href="#corredores" class="block py-2 hover:text-customBlue-600">Corredores y Destinos</a>
+            <a href="#normativa" class="block py-2 hover:text-customBlue-600">Marco Normativo</a>
+            <a href="#simulador" class="block py-2 hover:text-customBlue-600">Simulador Draw-Back</a>
+            <a href="#riesgos" class="block py-2 hover:text-customBlue-600">Matriz de Riesgo</a>
+        </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section class="pt-28 pb-16 bg-gradient-to-b from-customBlue-950 via-slate-900 to-slate-900 text-white relative overflow-hidden">
+        <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#38bdf8_1px,transparent_1px)] [background-size:16px_16px]"></div>
+        
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="flex flex-wrap items-center gap-3 mb-6">
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                    <i class="fa-solid fa-clock-rotate-left mr-1.5"></i> Corte Estadístico: 29 Sept. 2026
+                </span>
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-customBlue-500/20 text-customBlue-300 border border-customBlue-500/30">
+                    <i class="fa-solid fa-scale-balanced mr-1.5"></i> Análisis Estadístico & Normativo
+                </span>
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                    <i class="fa-solid fa-map-location-dot mr-1.5"></i> Región NEA - Argentina
+                </span>
+            </div>
+
+            <h1 class="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-tight mb-6">
+                Comercio Internacional y Despacho Aduanero en el <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-sky-300 to-amber-300">NEA (2021-2026)</span>
+            </h1>
+            
+            <p class="text-lg sm:text-xl text-slate-300 max-w-4xl font-normal leading-relaxed mb-8">
+                Evaluación integral del desempeño exportador en <strong class="text-white">Yerba Mate, Té y Complejo Forestal</strong>, la trazabilidad del <strong class="text-white">Draw-Back</strong>, la evolución digital del sistema <strong class="text-white">MALVINA/ARCA</strong> y la optimización de los corredores logísticos regionales.
+            </p>
+
+            <div class="flex flex-wrap gap-4">
+                <a href="#estadisticas" class="px-6 py-3.5 bg-customBlue-600 hover:bg-customBlue-500 text-white font-semibold rounded-xl shadow-lg shadow-customBlue-600/30 transition-all transform hover:-translate-y-0.5">
+                    <i class="fa-solid fa-chart-line mr-2"></i> Explorar Datos FOB
+                </a>
+                <a href="#simulador" class="px-6 py-3.5 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-semibold rounded-xl transition-all hover:text-white">
+                    <i class="fa-solid fa-calculator mr-2"></i> Calcular Benefit Draw-Back
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- RESUMEN EJECUTIVO (KPI CARDS) -->
+    <section id="resumen" class="py-12 -mt-8 relative z-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                
+                <!-- KPI 1: Yerba Mate -->
+                <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-xl border border-slate-100 dark:border-slate-700 hover:shadow-2xl transition-all">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="p-3 bg-emerald-100 dark:bg-emerald-900/50 rounded-xl text-emerald-700 dark:text-emerald-400">
+                            <i class="fa-solid fa-leaf text-2xl"></i>
+                        </div>
+                        <span class="text-xs font-bold px-2.5 py-1 bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-400 rounded-full border border-emerald-200 dark:border-emerald-800">
+                            +48.1% (2021-2025)
+                        </span>
+                    </div>
+                    <h3 class="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Yerba Mate (FOB)</h3>
+                    <p class="text-3xl font-extrabold text-slate-900 dark:text-white mt-1">USD 117 M</p>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-2">
+                        <span class="font-medium text-emerald-600 dark:text-emerald-400">Crecimiento Sostenido.</span> 2026 S1 alcanza USD 49 M. Destino líder: Siria y Chile.
+                    </p>
+                </div>
+
+                <!-- KPI 2: Té -->
+                <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-xl border border-slate-100 dark:border-slate-700 hover:shadow-2xl transition-all">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="p-3 bg-amber-100 dark:bg-amber-900/50 rounded-xl text-amber-700 dark:text-amber-400">
+                            <i class="fa-solid fa-mug-hot text-2xl"></i>
+                        </div>
+                        <span class="text-xs font-bold px-2.5 py-1 bg-amber-50 dark:bg-amber-950 text-amber-700 dark:text-amber-400 rounded-full border border-amber-200 dark:border-amber-800">
+                            Resiliente
+                        </span>
+                    </div>
+                    <h3 class="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Té (FOB)</h3>
+                    <p class="text-3xl font-extrabold text-slate-900 dark:text-white mt-1">USD 67 M</p>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-2">
+                        Promedio anual ~USD 80 M (2021-2024). 2026 S1 suma USD 36 M. Mercado principal: EE.UU. y Alemania.
+                    </p>
+                </div>
+
+                <!-- KPI 3: Complejo Forestal -->
+                <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-xl border border-slate-100 dark:border-slate-700 hover:shadow-2xl transition-all">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="p-3 bg-customBlue-100 dark:bg-customBlue-900/50 rounded-xl text-customBlue-700 dark:text-customBlue-400">
+                            <i class="fa-solid fa-tree text-2xl"></i>
+                        </div>
+                        <span class="text-xs font-bold px-2.5 py-1 bg-customBlue-50 dark:bg-customBlue-950 text-customBlue-700 dark:text-customBlue-400 rounded-full border border-customBlue-200 dark:border-customBlue-800">
+                            Dominio Regional
+                        </span>
+                    </div>
+                    <h3 class="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Complejo Forestal</h3>
+                    <p class="text-3xl font-extrabold text-slate-900 dark:text-white mt-1">USD 821 M</p>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-2">
+                        Pico de USD 861 M (2021). 2026 S1 registra USD 481 M. Alto volumen y diversificación internacional.
+                    </p>
+                </div>
+
+                <!-- KPI 4: Digitalización AFIP/ARCA -->
+                <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-xl border border-slate-100 dark:border-slate-700 hover:shadow-2xl transition-all">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="p-3 bg-purple-100 dark:bg-purple-900/50 rounded-xl text-purple-700 dark:text-purple-400">
+                            <i class="fa-solid fa-robot text-2xl"></i>
+                        </div>
+                        <span class="text-xs font-bold px-2.5 py-1 bg-purple-50 dark:bg-purple-950 text-purple-700 dark:text-purple-400 rounded-full border border-purple-200 dark:border-purple-800">
+                            RG 5745/2025
+                        </span>
+                    </div>
+                    <h3 class="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Estado de Gestión</h3>
+                    <p class="text-3xl font-extrabold text-slate-900 dark:text-white mt-1">Estado "AUTO"</p>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-2">
+                        Automatización de liquidaciones en MALVINA. Transición de papel a trazabilidad 100% digital.
+                    </p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- SECCIÓN ESTADÍSTICA INTERACTIVA -->
+    <section id="estadisticas" class="py-12 bg-white dark:bg-slate-900/50 border-y border-slate-200 dark:border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <h2 class="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">Evolución de Exportaciones por Complejo (USD FOB)</h2>
+                <p class="text-slate-600 dark:text-slate-400 mt-2">
+                    Análisis comparativo de montos FOB exportados entre 2021 y el primer semestre de 2026.
+                    <span class="inline-block font-semibold text-amber-600 dark:text-amber-400">*Nota: 2026 S1 corresponde al primer semestre y no se compara linealmente con años completos.</span>
+                </p>
+            </div>
+
+            <!-- Chart Container & Filters -->
+            <div class="bg-slate-50 dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-md mb-12">
+                <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+                    <div class="flex items-center space-x-2">
+                        <span class="text-sm font-semibold text-slate-700 dark:text-slate-300">Mostrar Complejo:</span>
+                        <div class="inline-flex rounded-lg shadow-sm border border-slate-300 dark:border-slate-600 p-1 bg-white dark:bg-slate-900" role="group">
+                            <button onclick="updateChart('all')" id="btn-all" class="px-3 py-1.5 text-xs font-semibold rounded-md bg-customBlue-600 text-white transition-all">Todos</button>
+                            <button onclick="updateChart('yerba')" id="btn-yerba" class="px-3 py-1.5 text-xs font-semibold rounded-md text-slate-600 dark:text-slate-300 hover:text-customBlue-600 transition-all">Yerba Mate</button>
+                            <button onclick="updateChart('te')" id="btn-te" class="px-3 py-1.5 text-xs font-semibold rounded-md text-slate-600 dark:text-slate-300 hover:text-customBlue-600 transition-all">Té</button>
+                            <button onclick="updateChart('forestal')" id="btn-forestal" class="px-3 py-1.5 text-xs font-semibold rounded-md text-slate-600 dark:text-slate-300 hover:text-customBlue-600 transition-all">Forestal</button>
+                        </div>
+                    </div>
+                    <div class="text-xs text-slate-500 dark:text-slate-400">
+                        <i class="fa-solid fa-database mr-1"></i> Fuente: INDEC & Informes Técnicos Aduaneros
+                    </div>
+                </div>
+
+                <div class="relative h-80 sm:h-96 w-full">
+                    <canvas id="fobChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Dynamic Data Table -->
+            <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
+                <div class="p-6 border-b border-slate-200 dark:border-slate-700 flex flex-wrap items-center justify-between gap-4">
+                    <div>
+                        <h3 class="text-lg font-bold text-slate-900 dark:text-white">Matriz Estadística de Exportación (USD Millones FOB)</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Detalle interactivo por complejo productivo del NEA.</p>
+                    </div>
+                    <div class="relative">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                        <input type="text" id="tableSearch" onkeyup="filterTable()" placeholder="Buscar en tabla..." class="pl-9 pr-4 py-2 text-sm bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-customBlue-500 outline-none">
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm text-slate-600 dark:text-slate-300" id="exportTable">
+                        <thead class="bg-slate-100 dark:bg-slate-900/80 text-xs font-semibold text-slate-700 dark:text-slate-200 uppercase tracking-wider">
+                            <tr>
+                                <th class="py-3.5 px-4 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-800" onclick="sortTable(0)">Complejo <i class="fa-solid fa-sort ml-1 text-slate-400"></i></th>
+                                <th class="py-3.5 px-4 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-800" onclick="sortTable(1)">2021 <i class="fa-solid fa-sort ml-1 text-slate-400"></i></th>
+                                <th class="py-3.5 px-4 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-800" onclick="sortTable(2)">2022 <i class="fa-solid fa-sort ml-1 text-slate-400"></i></th>
+                                <th class="py-3.5 px-4 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-800" onclick="sortTable(3)">2023 <i class="fa-solid fa-sort ml-1 text-slate-400"></i></th>
+                                <th class="py-3.5 px-4 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-800" onclick="sortTable(4)">2024 <i class="fa-solid fa-sort ml-1 text-slate-400"></i></th>
+                                <th class="py-3.5 px-4 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-800" onclick="sortTable(5)">2025 <i class="fa-solid fa-sort ml-1 text-slate-400"></i></th>
+                                <th class="py-3.5 px-4 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-800" onclick="sortTable(6)">2026 S1 <i class="fa-solid fa-sort ml-1 text-slate-400"></i></th>
+                                <th class="py-3.5 px-4">Tendencia / Comentario</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-200 dark:divide-slate-700">
+                            <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors">
+                                <td class="py-4 px-4 font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-2">
+                                    <i class="fa-solid fa-leaf"></i> Yerba Mate
+                                </td>
+                                <td class="py-4 px-4">USD 79 M</td>
+                                <td class="py-4 px-4">USD 94 M</td>
+                                <td class="py-4 px-4">USD 89 M</td>
+                                <td class="py-4 px-4">USD 101 M</td>
+                                <td class="py-4 px-4 font-semibold text-slate-900 dark:text-white">USD 117 M</td>
+                                <td class="py-4 px-4 text-emerald-600 font-semibold">USD 49 M</td>
+                                <td class="py-4 px-4 text-xs">Crecimiento constante. Siria consolida participación clave.</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors">
+                                <td class="py-4 px-4 font-bold text-amber-600 dark:text-amber-400 flex items-center gap-2">
+                                    <i class="fa-solid fa-mug-hot"></i> Té
+                                </td>
+                                <td class="py-4 px-4">USD 81 M</td>
+                                <td class="py-4 px-4">USD 81 M</td>
+                                <td class="py-4 px-4">USD 75 M</td>
+                                <td class="py-4 px-4">USD 81 M</td>
+                                <td class="py-4 px-4 font-semibold text-slate-900 dark:text-white">USD 67 M</td>
+                                <td class="py-4 px-4 text-amber-600 font-semibold">USD 36 M</td>
+                                <td class="py-4 px-4 text-xs">Estabilidad estructural. Orientación sólida hacia EE.UU. y Europa.</td>
+                            </tr>
+                            <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors">
+                                <td class="py-4 px-4 font-bold text-customBlue-600 dark:text-customBlue-400 flex items-center gap-2">
+                                    <i class="fa-solid fa-tree"></i> Complejo Forestal
+                                </td>
+                                <td class="py-4 px-4 font-semibold">USD 861 M</td>
+                                <td class="py-4 px-4 text-slate-400">S/D *</td>
+                                <td class="py-4 px-4 text-slate-400">S/D *</td>
+                                <td class="py-4 px-4 text-slate-400">S/D *</td>
+                                <td class="py-4 px-4 font-semibold text-slate-900 dark:text-white">USD 821 M</td>
+                                <td class="py-4 px-4 text-customBlue-600 font-semibold">USD 481 M</td>
+                                <td class="py-4 px-4 text-xs">Líder indiscutido en divisas. Alta penetración en Brasil/EE.UU.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="p-4 bg-slate-50 dark:bg-slate-900 border-t border-slate-200 dark:border-slate-700 text-xs text-slate-500">
+                    * Nota metodológica: Los volúmenes físicos (toneladas) no se consolidan en la misma serie por INDEC para los tres complejos, requiriendo microdatos por NCM. *Valores de la serie forestal intermedia sujetos a descarga directa por INDEC NCM.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CORREDORES ADUANEROS Y DESTINOS PRINCIPALES -->
+    <section id="corredores" class="py-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <h2 class="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">Corredores Logísticos y Destinos Globales</h2>
+                <p class="text-slate-600 dark:text-slate-400 mt-2">
+                    Nodos de registro aduanero en la Mesopotamia y principales mercados receptores por complejo.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Nodos Aduaneros del NEA -->
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700">
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-2">
+                        <i class="fa-solid fa-building-columns text-customBlue-600"></i> Aduanas Operativas Clave del NEA
+                    </h3>
+                    
+                    <div class="space-y-4">
+                        <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 flex items-start gap-4">
+                            <div class="p-3 bg-customBlue-100 dark:bg-customBlue-950 text-customBlue-700 dark:text-customBlue-400 rounded-lg">
+                                <i class="fa-solid fa-location-dot text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-slate-900 dark:text-white">Posadas (Misiones)</h4>
+                                <p class="text-xs text-slate-600 dark:text-slate-400 mt-1">
+                                    Nodo natural y administrativo para exportaciones de Yerba Mate, Té y productos forestales procesados de Misiones.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 flex items-start gap-4">
+                            <div class="p-3 bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-400 rounded-lg">
+                                <i class="fa-solid fa-route text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-slate-900 dark:text-white">Bernardo de Irigoyen (Misiones)</h4>
+                                <p class="text-xs text-slate-600 dark:text-slate-400 mt-1">
+                                    Punto fronterizo seco crítico para el tránsito rodoviario hacia el Estado de Santa Catarina y Paraná (Brasil).
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 flex items-start gap-4">
+                            <div class="p-3 bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-400 rounded-lg">
+                                <i class="fa-solid fa-truck-fast text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-slate-900 dark:text-white">Paso de los Libres (Corrientes)</h4>
+                                <p class="text-xs text-slate-600 dark:text-slate-400 mt-1">
+                                    Eje mesopotámico de mayor envergadura comercial. Articulación estratégica hacia Uruguaiana (Brasil) y el Mercosur ampliado.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Destinos Internacionales por Producto -->
+                <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700">
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-2">
+                        <i class="fa-solid fa-earth-americas text-emerald-600"></i> Mercados Destino Estratégicos
+                    </h3>
+
+                    <div class="space-y-6">
+                        <!-- Yerba Mate -->
+                        <div>
+                            <div class="flex justify-between text-sm font-semibold mb-2">
+                                <span class="text-emerald-600 dark:text-emerald-400"><i class="fa-solid fa-leaf mr-1"></i> Yerba Mate</span>
+                                <span class="text-xs text-slate-500">Siria, Chile, Medio Oriente</span>
+                            </div>
+                            <div class="p-3 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-900 text-xs text-slate-700 dark:text-slate-300">
+                                <strong>Siria</strong> representa el principal demandante histórico global, seguido por <strong>Chile</strong> e inmigraciones en Europa/EE.UU.
+                            </div>
+                        </div>
+
+                        <!-- Té -->
+                        <div>
+                            <div class="flex justify-between text-sm font-semibold mb-2">
+                                <span class="text-amber-600 dark:text-amber-400"><i class="fa-solid fa-mug-hot mr-1"></i> Té Negro / Concentrados</span>
+                                <span class="text-xs text-slate-500">EE.UU., Alemania, Chile</span>
+                            </div>
+                            <div class="p-3 rounded-lg bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-900 text-xs text-slate-700 dark:text-slate-300">
+                                <strong>EE.UU.</strong> absorbe más del 70% de las exportaciones de té frío (Ice Tea). <strong>Alemania</strong> exige estrictos estándares fitosanitarios.
+                            </div>
+                        </div>
+
+                        <!-- Forestal -->
+                        <div>
+                            <div class="flex justify-between text-sm font-semibold mb-2">
+                                <span class="text-customBlue-600 dark:text-customBlue-400"><i class="fa-solid fa-tree mr-1"></i> Complejo Forestal</span>
+                                <span class="text-xs text-slate-500">Brasil, EE.UU., Asia</span>
+                            </div>
+                            <div class="p-3 rounded-lg bg-customBlue-50 dark:bg-customBlue-950/40 border border-customBlue-200 dark:border-customBlue-900 text-xs text-slate-700 dark:text-slate-300">
+                                Productos de alto valor agregado y pasta celulósica destinados a <strong>Brasil, EE.UU. y Asia</strong>.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- MARCO LEGAL Y CRONOLOGÍA NORMATIVA -->
+    <section id="normativa" class="py-16 bg-white dark:bg-slate-900/50 border-y border-slate-200 dark:border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">Cronología de Simplificación Normativa (2021-2026)</h2>
+                <p class="text-slate-600 dark:text-slate-400 mt-2">
+                    Evolución regulatoria desde el cobro de reintegros tradicional hacia la digitalización con el Sistema Integral de Recupero (SIR) y la automatización en SIM / MALVINA.
+                </p>
+            </div>
+
+            <div class="relative timeline-line space-y-12 max-w-4xl mx-auto">
+                
+                <!-- 2021 -->
+                <div class="relative flex flex-col md:flex-row items-center group">
+                    <div class="flex items-center justify-start w-full mx-auto md:w-1/2 md:pr-8 md:text-right">
+                        <div class="w-full p-6 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-md">
+                            <span class="inline-block px-3 py-1 bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-bold rounded-full mb-2">Año 2021</span>
+                            <h3 class="text-lg font-bold text-slate-900 dark:text-white">RG AFIP 5023/2021</h3>
+                            <p class="text-xs text-slate-600 dark:text-slate-400 mt-2">
+                                Prórroga del régimen de reintegros a sectores vulnerados. La liquidación de estímulos continuó supeditada al cobro mediante transferencia a CBU declarada en la arquitectura general del SIM.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="absolute left-0 md:left-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-customBlue-600 text-white flex items-center justify-center font-bold text-xs shadow-lg z-10">
+                        21
+                    </div>
+                    <div class="hidden md:block w-1/2"></div>
+                </div>
+
+                <!-- 2022 -->
+                <div class="relative flex flex-col md:flex-row items-center group">
+                    <div class="hidden md:block w-1/2"></div>
+                    <div class="absolute left-0 md:left-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-xs shadow-lg z-10">
+                        22
+                    </div>
+                    <div class="flex items-center justify-start w-full mx-auto md:w-1/2 md:pl-8">
+                        <div class="w-full p-6 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-md">
+                            <span class="inline-block px-3 py-1 bg-emerald-100 dark:bg-emerald-900/50 text-emerald-800 dark:text-emerald-300 text-xs font-bold rounded-full mb-2">Año 2022</span>
+                            <h3 class="text-lg font-bold text-slate-900 dark:text-white">RG AFIP 5173/2022 & Res. MDP 212/2022</h3>
+                            <p class="text-xs text-slate-600 dark:text-slate-400 mt-2">
+                                Habilitación del Sistema Integral de Recupero (SIR). Relanzamiento del Draw-Back: Inscripción mediante RUMP, solicitud de tipificación vía Trámites a Distancia (TAD) y emisión de certificado por 5 años. Restitución de derechos de importación e insumos incorporados.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2023 - 2024 -->
+                <div class="relative flex flex-col md:flex-row items-center group">
+                    <div class="flex items-center justify-start w-full mx-auto md:w-1/2 md:pr-8 md:text-right">
+                        <div class="w-full p-6 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-md">
+                            <span class="inline-block px-3 py-1 bg-amber-100 dark:bg-amber-900/50 text-amber-800 dark:text-amber-300 text-xs font-bold rounded-full mb-2">2023 - 2024</span>
+                            <h3 class="text-lg font-bold text-slate-900 dark:text-white">Adecuación DNU 70/2023</h3>
+                            <p class="text-xs text-slate-600 dark:text-slate-400 mt-2">
+                                Despapelización acelerada y reducción de discrecionalidad administrativa. Eliminación de bloqueos físicos redundantes y mayor trazabilidad digital en destinaciones aduaneras.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="absolute left-0 md:left-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-amber-600 text-white flex items-center justify-center font-bold text-xs shadow-lg z-10">
+                        24
+                    </div>
+                    <div class="hidden md:block w-1/2"></div>
+                </div>
+
+                <!-- 2025 - 2026 -->
+                <div class="relative flex flex-col md:flex-row items-center group">
+                    <div class="hidden md:block w-1/2"></div>
+                    <div class="absolute left-0 md:left-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-purple-600 text-white flex items-center justify-center font-bold text-xs shadow-lg z-10">
+                        26
+                    </div>
+                    <div class="flex items-center justify-start w-full mx-auto md:w-1/2 md:pl-8">
+                        <div class="w-full p-6 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-purple-200 dark:border-purple-900/50 shadow-md">
+                            <span class="inline-block px-3 py-1 bg-purple-100 dark:bg-purple-900/50 text-purple-800 dark:text-purple-300 text-xs font-bold rounded-full mb-2">2025 - 2026</span>
+                            <h3 class="text-lg font-bold text-slate-900 dark:text-white">RG ARCA 5745/2025 (Estado AUTO)</h3>
+                            <p class="text-xs text-slate-600 dark:text-slate-400 mt-2">
+                                Automatización en el Sistema MALVINA: Superados los controles de exigibilidad documental y fiscal, la liquidación pasa de manera automática a estado "AUTO" (A Autorizar) agilizando de forma sustancial el crédito en la CBU del exportador.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- SIMULADOR Y CALCULADORA INTERACTIVA DE DRAW-BACK -->
+    <section id="simulador" class="py-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <h2 class="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">Calculadora y Evaluador Draw-Back vs. Reintegro Tradicional</h2>
+                <p class="text-slate-600 dark:text-slate-400 mt-2">
+                    Ingrese los parámetros de su operación para comparar el retorno económico neto entre el régimen de Reintegro General de Exportación y el Draw-Back (Restitución de derechos por insumos importados).
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                <!-- Inputs Form -->
+                <div class="lg:col-span-6 bg-white dark:bg-slate-800 p-6 sm:p-8 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700">
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-2">
+                        <i class="fa-solid fa-sliders text-customBlue-600"></i> Parámetros de la Exportación
+                    </h3>
+
+                    <form id="calcForm" class="space-y-5" onsubmit="return false;">
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
+                                Valor FOB Total de Exportación (USD)
+                            </label>
+                            <div class="relative">
+                                <span class="absolute left-3 top-1/2 -translate-y-1/2 font-semibold text-slate-400">$</span>
+                                <input type="number" id="fobValue" value="100000" min="1000" step="1000" oninput="calculateBenefits()" class="w-full pl-8 pr-4 py-2.5 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-customBlue-500 font-semibold text-slate-900 dark:text-white outline-none">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
+                                    Alícuota Reintegro Tradicional (%)
+                                </label>
+                                <input type="number" id="reintegroRate" value="3.0" min="0" max="15" step="0.5" oninput="calculateBenefits()" class="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-customBlue-500 font-semibold text-slate-900 dark:text-white outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
+                                    Insumos Importados CIF (USD)
+                                </label>
+                                <input type="number" id="cifInsumos" value="15000" min="0" step="500" oninput="calculateBenefits()" class="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-customBlue-500 font-semibold text-slate-900 dark:text-white outline-none">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
+                                Derechos de Importación pagados en insumos (%)
+                            </label>
+                            <input type="number" id="importDutyRate" value="12.0" min="0" max="35" step="0.5" oninput="calculateBenefits()" class="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-customBlue-500 font-semibold text-slate-900 dark:text-white outline-none">
+                        </div>
+
+                        <div class="p-4 bg-slate-50 dark:bg-slate-900/60 rounded-xl border border-slate-200 dark:border-slate-700 text-xs text-slate-500">
+                            <i class="fa-solid fa-circle-info mr-1 text-customBlue-600"></i>
+                            Draw-Back permite la devolución total o parcial de los tributos de importación abonados previamente en insumos incorporados al producto final exportado.
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Simulation Output -->
+                <div class="lg:col-span-6 bg-slate-900 text-white p-6 sm:p-8 rounded-2xl shadow-xl flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-xl font-bold flex items-center gap-2">
+                                <i class="fa-solid fa-chart-pie text-emerald-400"></i> Resultado de Estimación
+                            </h3>
+                            <span class="text-xs px-2.5 py-1 rounded-full bg-slate-800 border border-slate-700 text-slate-300">Retorno Neto Est.</span>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                            <!-- Option A -->
+                            <div class="p-4 rounded-xl bg-slate-800/80 border border-slate-700">
+                                <p class="text-xs text-slate-400 font-semibold uppercase">Reintegro Tradicional</p>
+                                <p class="text-2xl font-extrabold text-white mt-1" id="resReintegro">USD 3,000</p>
+                                <p class="text-xs text-slate-400 mt-1">Sencillez operativa. Sin tipificación previa.</p>
+                            </div>
+
+                            <!-- Option B -->
+                            <div class="p-4 rounded-xl bg-slate-800/80 border border-slate-700">
+                                <p class="text-xs text-slate-400 font-semibold uppercase">Draw-Back Recuperable</p>
+                                <p class="text-2xl font-extrabold text-emerald-400 mt-1" id="resDrawback">USD 1,800</p>
+                                <p class="text-xs text-slate-400 mt-1">Restitución directa de aranceles e impuestos.</p>
+                            </div>
+                        </div>
+
+                        <!-- Combined / Recommandation Card -->
+                        <div id="recommendationBox" class="p-5 rounded-xl bg-gradient-to-r from-emerald-950/80 to-slate-800 border border-emerald-500/30">
+                            <div class="flex items-center gap-3 mb-2">
+                                <div class="p-2 bg-emerald-500/20 text-emerald-400 rounded-lg">
+                                    <i class="fa-solid fa-lightbulb text-lg"></i>
+                                </div>
+                                <h4 class="font-bold text-emerald-300 text-sm">Dictamen Técnico Sugerido</h4>
+                            </div>
+                            <p class="text-xs text-slate-200 leading-relaxed" id="recommendationText">
+                                Para productos primarios o de bajo contenido de insumos importados, el Reintegro Tradicional resulta más ágil e inmediato.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="mt-8 pt-6 border-t border-slate-800 text-xs text-slate-400 flex items-center justify-between">
+                        <span><i class="fa-solid fa-certificate mr-1"></i> Vigencia Certificado Draw-Back: 5 Años</span>
+                        <span>Sujeto a verificación Malvina</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CONCLUSIONES CLAVE Y MATRIZ DE RIESGO ADUANERO -->
+    <section id="riesgos" class="py-16 bg-white dark:bg-slate-900/50 border-t border-slate-200 dark:border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <h2 class="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">Matriz de Control de Riesgos Aduaneros en el NEA</h2>
+                <p class="text-slate-600 dark:text-slate-400 mt-2">
+                    Principales motivos de bloqueo e inconsistencias en la liberación de estímulos a la exportación y medidas preventivas requeridas.
+                </p>
+            </div>
+
+            <!-- Interactive Risk Tabs -->
+            <div class="bg-slate-50 dark:bg-slate-800 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
+                <div class="flex flex-wrap border-b border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-900">
+                    <button onclick="switchTab('tab-ncm')" id="btn-tab-ncm" class="px-6 py-4 text-xs font-bold uppercase tracking-wider border-b-2 border-customBlue-600 text-customBlue-600 transition-all flex items-center gap-2">
+                        <i class="fa-solid fa-barcode"></i> Desalineación NCM
+                    </button>
+                    <button onclick="switchTab('tab-tipificacion')" id="btn-tab-tipificacion" class="px-6 py-4 text-xs font-bold uppercase tracking-wider border-b-2 border-transparent text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 transition-all flex items-center gap-2">
+                        <i class="fa-solid fa-file-contract"></i> Certificado Vencido
+                    </button>
+                    <button onclick="switchTab('tab-cbu')" id="btn-tab-cbu" class="px-6 py-4 text-xs font-bold uppercase tracking-wider border-b-2 border-transparent text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 transition-all flex items-center gap-2">
+                        <i class="fa-solid fa-ban"></i> Deuda Fiscal / CBU
+                    </button>
+                    <button onclick="switchTab('tab-packing')" id="btn-tab-packing" class="px-6 py-4 text-xs font-bold uppercase tracking-wider border-b-2 border-transparent text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 transition-all flex items-center gap-2">
+                        <i class="fa-solid fa-boxes-packing"></i> Discrepancia Packing List
+                    </button>
+                </div>
+
+                <div class="p-6 sm:p-8">
+                    <!-- TAB 1 -->
+                    <div id="tab-ncm" class="risk-tab-content space-y-4">
+                        <div class="flex items-center gap-3 text-red-600 dark:text-red-400 font-bold text-lg">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                            <h3>Inconsistencia en Posición Arancelaria (NCM)</h3>
+                        </div>
+                        <p class="text-sm text-slate-600 dark:text-slate-300">
+                            Modificaciones en la descripción de la mercadería o discrepancia entre el certificado de tipificación Draw-Back y la declaración detallada SIM.
+                        </p>
+                        <div class="p-4 rounded-xl bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900 text-xs text-slate-700 dark:text-slate-300">
+                            <strong>Impacto Aduanero:</strong> Bloqueo automático del pago del beneficio e inhabilitación temporal de la declaración en MALVINA. Requiere rectificación de la destinación.
+                        </div>
+                    </div>
+
+                    <!-- TAB 2 -->
+                    <div id="tab-tipificacion" class="risk-tab-content hidden space-y-4">
+                        <div class="flex items-center gap-3 text-amber-600 dark:text-amber-400 font-bold text-lg">
+                            <i class="fa-solid fa-clock"></i>
+                            <h3>Vencimiento del Certificado de Tipificación TAD</h3>
+                        </div>
+                        <p class="text-sm text-slate-600 dark:text-slate-300">
+                            Superar los 5 años de vigencia del dictamen de Draw-Back emitido por la Secretaría de Industria o alterar la relación insumo-producto sin actualización.
+                        </p>
+                        <div class="p-4 rounded-xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900 text-xs text-slate-700 dark:text-slate-300">
+                            <strong>Impacto Aduanero:</strong> Denegación inmediata del beneficio. El sistema re-liquida tributos sobre el régimen general sin restituciones de insumos importados.
+                        </div>
+                    </div>
+
+                    <!-- TAB 3 -->
+                    <div id="tab-cbu" class="risk-tab-content hidden space-y-4">
+                        <div class="flex items-center gap-3 text-purple-600 dark:text-purple-400 font-bold text-lg">
+                            <i class="fa-solid fa-wallet"></i>
+                            <h3>Inconsistencias en CBU Declarada o Deudas Fiscales</h3>
+                        </div>
+                        <p class="text-sm text-slate-600 dark:text-slate-300">
+                            Registrar deudas líquidas y exigibles en ARCA/AFIP o falta de registración/asociación de la CBU bancaria en el Registro de Clave Bancaria Uniforme.
+                        </p>
+                        <div class="p-4 rounded-xl bg-purple-50 dark:bg-purple-950/30 border border-purple-200 dark:border-purple-900 text-xs text-slate-700 dark:text-slate-300">
+                            <strong>Impacto Aduanero:</strong> Aunque la liquidación pase a estado "AUTO", el pago se detiene hasta la compensación o regularización de las obligaciones fiscales.
+                        </div>
+                    </div>
+
+                    <!-- TAB 4 -->
+                    <div id="tab-packing" class="risk-tab-content hidden space-y-4">
+                        <div class="flex items-center gap-3 text-customBlue-600 dark:text-customBlue-400 font-bold text-lg">
+                            <i class="fa-solid fa-file-invoice"></i>
+                            <h3>Diferencias entre Factura Comercial y Packing List</h3>
+                        </div>
+                        <p class="text-sm text-slate-600 dark:text-slate-300">
+                            Divergencias en el kilaje neto declaratorio vs. bultos físicos constatados por el guarda en el nodo aduanero (Posadas, Paso de los Libres, Bernardo de Irigoyen).
+                        </p>
+                        <div class="p-4 rounded-xl bg-customBlue-50 dark:bg-customBlue-950/30 border border-customBlue-200 dark:border-customBlue-900 text-xs text-slate-700 dark:text-slate-300">
+                            <strong>Impacto Aduanero:</strong> Observación documental y pase a canal rojo de verificación obligatoria. Retrasos en el cumplimiento de embarque.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recomendaciones para Pymes Exportadoras -->
+            <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="p-6 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700">
+                    <div class="w-10 h-10 bg-emerald-100 dark:bg-emerald-900/50 text-emerald-600 dark:text-emerald-400 rounded-xl flex items-center justify-center font-bold mb-4">1</div>
+                    <h4 class="font-bold text-slate-900 dark:text-white mb-2">Matriz por Producto</h4>
+                    <p class="text-xs text-slate-600 dark:text-slate-400">
+                        Mantener una matriz viva indexando NCM, insumos importados, aduana elegida, alícuota de reintegro y estado del certificado TAD.
+                    </p>
+                </div>
+
+                <div class="p-6 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700">
+                    <div class="w-10 h-10 bg-customBlue-100 dark:bg-customBlue-900/50 text-customBlue-600 dark:text-customBlue-400 rounded-xl flex items-center justify-center font-bold mb-4">2</div>
+                    <h4 class="font-bold text-slate-900 dark:text-white mb-2">Aduana & Corredor</h4>
+                    <p class="text-xs text-slate-600 dark:text-slate-400">
+                        Verificar la capacidad operativa del nodo de salida (ej. Paso de los Libres vs. Posadas) antes del registro de la destinación para evitar costos de depósito.
+                    </p>
+                </div>
+
+                <div class="p-6 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700">
+                    <div class="w-10 h-10 bg-purple-100 dark:bg-purple-900/50 text-purple-600 dark:text-purple-400 rounded-xl flex items-center justify-center font-bold mb-4">3</div>
+                    <h4 class="font-bold text-slate-900 dark:text-white mb-2">Monitoreo MALVINA</h4>
+                    <p class="text-xs text-slate-600 dark:text-slate-400">
+                        Auditar quincenalmente las liquidaciones para validar la asignación automática del estado "AUTO" en consonancia con la RG ARCA 5745/2025.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-slate-950 text-slate-400 py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+                <div>
+                    <div class="flex items-center space-x-2 text-white font-bold text-lg">
+                        <i class="fa-solid fa-ship text-customBlue-400"></i>
+                        <span>NEA Trade & Customs Analytics</span>
+                    </div>
+                    <p class="text-xs text-slate-500 mt-1">
+                        Informe técnico de investigación sobre economía regional, despacho aduanero y regímenes de fomento (2021–2026).
+                    </p>
+                </div>
+
+                <div class="text-xs text-slate-500 text-center md:text-right">
+                    <p>Fuentes Oficiales: INDEC, AFIP, ARCA, Código Aduanero (Ley 22.415)</p>
+                    <p class="mt-1">Corte de Datos: 29 de Septiembre de 2026</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // ----------------------------------------------------
+        // DARK MODE TOGGLE LOGIC
+        // ----------------------------------------------------
+        const themeToggleBtn = document.getElementById('themeToggle');
+        const darkIcon = document.getElementById('themeToggleDarkIcon');
+        const lightIcon = document.getElementById('themeToggleLightIcon');
+
+        if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+            lightIcon.classList.remove('hidden');
+        } else {
+            document.documentElement.classList.remove('dark');
+            darkIcon.classList.remove('hidden');
+        }
+
+        themeToggleBtn.addEventListener('click', function() {
+            darkIcon.classList.toggle('hidden');
+            lightIcon.classList.toggle('hidden');
+
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('color-theme', 'light');
+            } else {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('color-theme', 'dark');
+            }
+        });
+
+        // ----------------------------------------------------
+        // MOBILE MENU LOGIC
+        // ----------------------------------------------------
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // ----------------------------------------------------
+        // CHART.JS INITIALIZATION & UPDATES
+        // ----------------------------------------------------
+        const ctx = document.getElementById('fobChart').getContext('2d');
+        
+        const chartData = {
+            labels: ['2021', '2022', '2023', '2024', '2025', '2026 S1*'],
+            datasets: [
+                {
+                    label: 'Yerba Mate (USD M)',
+                    data: [79, 94, 89, 101, 117, 49],
+                    borderColor: '#16a34a',
+                    backgroundColor: 'rgba(22, 163, 74, 0.15)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.3
+                },
+                {
+                    label: 'Té (USD M)',
+                    data: [81, 81, 75, 81, 67, 36],
+                    borderColor: '#d97706',
+                    backgroundColor: 'rgba(217, 119, 6, 0.15)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.3
+                },
+                {
+                    label: 'Complejo Forestal (USD M)',
+                    data: [861, null, null, null, 821, 481],
+                    borderColor: '#0284c7',
+                    backgroundColor: 'rgba(2, 132, 199, 0.15)',
+                    borderWidth: 3,
+                    fill: true,
+                    spanGaps: true,
+                    tension: 0.3
+                }
+            ]
+        };
+
+        let myChart = new Chart(ctx, {
+            type: 'line',
+            data: chartData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            font: { family: 'Inter', size: 12 }
+                        }
+                    },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false,
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.parsed.y !== null) {
+                                    label += 'USD ' + context.parsed.y + ' Millones';
+                                } else {
+                                    label += 'S/D (Microdatos NCM)';
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: 'rgba(150, 150, 150, 0.1)' }
+                    },
+                    x: {
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+
+        function updateChart(type) {
+            // Reset button active classes
+            ['all', 'yerba', 'te', 'forestal'].forEach(key => {
+                const btn = document.getElementById(`btn-${key}`);
+                if (key === type) {
+                    btn.className = 'px-3 py-1.5 text-xs font-semibold rounded-md bg-customBlue-600 text-white transition-all';
+                } else {
+                    btn.className = 'px-3 py-1.5 text-xs font-semibold rounded-md text-slate-600 dark:text-slate-300 hover:text-customBlue-600 transition-all';
+                }
+            });
+
+            if (type === 'all') {
+                myChart.data.datasets[0].hidden = false;
+                myChart.data.datasets[1].hidden = false;
+                myChart.data.datasets[2].hidden = false;
+            } else if (type === 'yerba') {
+                myChart.data.datasets[0].hidden = false;
+                myChart.data.datasets[1].hidden = true;
+                myChart.data.datasets[2].hidden = true;
+            } else if (type === 'te') {
+                myChart.data.datasets[0].hidden = true;
+                myChart.data.datasets[1].hidden = false;
+                myChart.data.datasets[2].hidden = true;
+            } else if (type === 'forestal') {
+                myChart.data.datasets[0].hidden = true;
+                myChart.data.datasets[1].hidden = true;
+                myChart.data.datasets[2].hidden = false;
+            }
+            myChart.update();
+        }
+
+        // ----------------------------------------------------
+        // DATA TABLE FILTER & SORTING
+        // ----------------------------------------------------
+        function filterTable() {
+            const input = document.getElementById("tableSearch");
+            const filter = input.value.toUpperCase();
+            const table = document.getElementById("exportTable");
+            const tr = table.getElementsByTagName("tr");
+
+            for (let i = 1; i < tr.length; i++) {
+                let tdArray = tr[i].getElementsByTagName("td");
+                let match = false;
+                for (let j = 0; j < tdArray.length; j++) {
+                    if (tdArray[j]) {
+                        if (tdArray[j].innerHTML.toUpperCase().indexOf(filter) > -1) {
+                            match = true;
+                            break;
+                        }
+                    }
+                }
+                tr[i].style.display = match ? "" : "none";
+            }
+        }
+
+        function sortTable(n) {
+            let table = document.getElementById("exportTable");
+            let rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+            switching = true;
+            dir = "asc"; 
+            while (switching) {
+                switching = false;
+                rows = table.rows;
+                for (i = 1; i < (rows.length - 1); i++) {
+                    shouldSwitch = false;
+                    x = rows[i].getElementsByTagName("TD")[n];
+                    y = rows[i + 1].getElementsByTagName("TD")[n];
+                    if (dir == "asc") {
+                        if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                            shouldSwitch = true;
+                            break;
+                        }
+                    } else if (dir == "desc") {
+                        if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+                            shouldSwitch = true;
+                            break;
+                        }
+                    }
+                }
+                if (shouldSwitch) {
+                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                    switching = true;
+                    switchcount ++; 
+                } else {
+                    if (switchcount == 0 && dir == "asc") {
+                        dir = "desc";
+                        switching = true;
+                    }
+                }
+            }
+        }
+
+        // ----------------------------------------------------
+        // DRAW-BACK VS REINTEGRO CALCULATOR LOGIC
+        // ----------------------------------------------------
+        function calculateBenefits() {
+            const fob = parseFloat(document.getElementById('fobValue').value) || 0;
+            const reintegroRate = parseFloat(document.getElementById('reintegroRate').value) || 0;
+            const cifInsumos = parseFloat(document.getElementById('cifInsumos').value) || 0;
+            const importDutyRate = parseFloat(document.getElementById('importDutyRate').value) || 0;
+
+            // Calculations
+            const totalReintegro = fob * (reintegroRate / 100);
+            const totalDrawback = cifInsumos * (importDutyRate / 100);
+
+            // UI Updates
+            document.getElementById('resReintegro').innerText = 'USD ' + Math.round(totalReintegro).toLocaleString();
+            document.getElementById('resDrawback').innerText = 'USD ' + Math.round(totalDrawback).toLocaleString();
+
+            const recBox = document.getElementById('recommendationBox');
+            const recText = document.getElementById('recommendationText');
+
+            if (totalDrawback > totalReintegro) {
+                recText.innerHTML = `<strong>Régimen Sugerido: Draw-Back.</strong> El recupero de aranceles e insumos importados (USD ${Math.round(totalDrawback).toLocaleString()}) supera al Reintegro Tradicional por USD ${Math.round(totalDrawback - totalReintegro).toLocaleString()}. Se recomienda tramitar la tipificación por TAD (Res. MDP 212/2022).`;
+            } else if (totalDrawback > 0 && totalDrawback <= totalReintegro) {
+                recText.innerHTML = `<strong>Régimen Sugerido: Reintegro Tradicional.</strong> El beneficio directo (USD ${Math.round(totalReintegro).toLocaleString()}) es superior o más ágil que el costo administrativo del Draw-Back. No requiere tipificación de insumo previa.`;
+            } else {
+                recText.innerHTML = `<strong>Régimen Sugerido: Reintegro Tradicional.</strong> Al no contar con un porcentaje significativo de insumos importados gravados, el régimen de Draw-Back no resulta aplicable.`;
+            }
+        }
+
+        // Initialize Calc on Load
+        calculateBenefits();
+
+        // ----------------------------------------------------
+        // RISK MATRIX TABS LOGIC
+        // ----------------------------------------------------
+        function switchTab(tabId) {
+            // Hide all tab content
+            document.querySelectorAll('.risk-tab-content').forEach(tab => {
+                tab.classList.add('hidden');
+            });
+
+            // Remove active classes from buttons
+            const tabButtons = ['tab-ncm', 'tab-tipificacion', 'tab-cbu', 'tab-packing'];
+            tabButtons.forEach(id => {
+                const btn = document.getElementById(`btn-${id}`);
+                btn.className = "px-6 py-4 text-xs font-bold uppercase tracking-wider border-b-2 border-transparent text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 transition-all flex items-center gap-2";
+            });
+
+            // Show selected tab
+            document.getElementById(tabId).classList.remove('hidden');
+
+            // Set active button
+            const activeBtn = document.getElementById(`btn-${tabId}`);
+            activeBtn.className = "px-6 py-4 text-xs font-bold uppercase tracking-wider border-b-2 border-customBlue-600 text-customBlue-600 transition-all flex items-center gap-2";
+        }
+    </script>
+</body>
+</html>
